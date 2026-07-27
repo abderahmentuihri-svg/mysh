@@ -25,7 +25,12 @@ int main(){
 	for (int i=1;i<parts.size();i++){
 		args.push_back(parts[i]);
 	}
-	std::cout<<cmd<<std::endl;}
+	if (cmd=="exit"){
+		break;
+	}
+
+	else{std::cout<<line<<": command not found"<<std::endl;}
+	}
 	return 0;
 	}
 
