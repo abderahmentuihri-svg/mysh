@@ -110,9 +110,43 @@ int main(){
 			}
 		}		
 	}
-        else{
-            std::cout << line << ": command not found" << std::endl;
+       	else{
+    std::string path = find_in_path(cmd);
+
+    if (path == ""){
+        std::cout << line << ": command not found" << std::endl;
+    }
+    else{
+        pid_t pid = fork();
+
+        if (pid == 0){
+            // child process
+
+            std::vector<char*> c_args;
+
+            c_args.push_back(const_cast<char*>(cmd.c_str()));
+
+            for (std::string& arg : args){
+                c_args.push_back(const_cast<char*>(arg.c_str()));
+            }
+
+            c_args.push_back(nullptr);
+
+            execvp(cmd.c_str(), c_args.data());
+
+            // only runs if execvp failed
+            perror("execvp");
+            exit(1);
         }
+        else if (pid > 0){
+            // parent process
+            waitpid(pid, nullptr, 0);
+        }
+        else{
+            perror("fork");
+        }
+    }
+}
     }
 
     return 0;
