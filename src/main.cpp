@@ -31,7 +31,7 @@ int main(){
     std::string line;
 
     while (1){
-        std::cout << getcwd() << "$ ";
+        std::cout << getcwd() << " $ ";
         std::getline(std::cin, line);
 
         std::vector<std::string> parts = split(line, ' ');
@@ -70,6 +70,19 @@ int main(){
                 std::cout << getcwd() << std::endl;
             }
         }
+	else if (cmd=="type"){
+		if (args.size()==0){
+			continue;
+		}
+		else{
+			for (int i=0;i<args.size();i++){
+				if (args[i]=="exit" || args[i]=="echo" || args[i]=="type" || args[i]=="pwd" || args[i]=="cd"){
+				std::cout<<args[i]<<" is a shell builtin.\n";
+				}
+				else{std::cout<<"type: "<<args[i]<<": command not found\n";}
+			}
+		}		
+	}
         else{
             std::cout << line << ": command not found" << std::endl;
         }
