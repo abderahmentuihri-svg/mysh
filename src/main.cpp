@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sys/wait.h>
 #include <vector>
 #include <string>
 #include <unistd.h>
@@ -26,6 +27,29 @@ std::string getcwd() {
     } else {
         throw std::runtime_error("getcwd failed");
     }
+}
+
+std::string find_in_path(std::string command)
+{
+    char *path_env = getenv("PATH");
+
+    if (path_env == nullptr)
+        return "";
+
+    std::string path = path_env;
+    std::vector<std::string> dirs = split(path, ':');
+
+    for (std::string dir : dirs)
+    {
+        std::string full_path = dir + "/" + command;
+
+        if (access(full_path.c_str(), X_OK) == 0)
+        {
+            return full_path;
+        }
+    }
+
+    return "";
 }
 int main(){
     std::string line;
@@ -72,14 +96,17 @@ int main(){
         }
 	else if (cmd=="type"){
 		if (args.size()==0){
-			continue;
+			std::cout<<std::endl;
 		}
 		else{
 			for (int i=0;i<args.size();i++){
 				if (args[i]=="exit" || args[i]=="echo" || args[i]=="type" || args[i]=="pwd" || args[i]=="cd"){
 				std::cout<<args[i]<<" is a shell builtin.\n";
 				}
-				else{std::cout<<"type: "<<args[i]<<": command not found\n";}
+				else if (""!=find_in_path(args[i])){
+						std::cout<<args[i]<<" is "<<find_in_path(args[i])<<std::endl;
+				}
+				
 			}
 		}		
 	}
