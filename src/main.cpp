@@ -55,7 +55,7 @@ int main(){
     std::string line;
 
     while (1){
-        std::cout << getcwd() << " $ ";
+	std::cout << "\033[32m"<<getcwd() << " $\033[0m ";
         std::getline(std::cin, line);
 
         std::vector<std::string> parts = split(line, ' ');
@@ -71,6 +71,9 @@ int main(){
         if (cmd == "exit"){
             break;
         }
+	else if (cmd=="clear" || cmd=="cls"){
+		std::cout<<"\033[2J\033[H";
+	}
         else if (cmd == "echo"){
             for (int i = 0; i < args.size(); i++) {
                 std::cout << args[i] << '\n';
@@ -100,7 +103,7 @@ int main(){
 		}
 		else{
 			for (int i=0;i<args.size();i++){
-				if (args[i]=="exit" || args[i]=="echo" || args[i]=="type" || args[i]=="pwd" || args[i]=="cd"){
+				if (args[i]=="exit" || args[i]=="echo" || args[i]=="type" || args[i]=="pwd" || args[i]=="cd" || args[i]=="clear" || args[i]=="cls"){
 				std::cout<<args[i]<<" is a shell builtin.\n";
 				}
 				else if (""!=find_in_path(args[i])){
